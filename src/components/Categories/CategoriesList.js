@@ -43,7 +43,7 @@ export default function CategoriesList() {
         newCat.action = category.id;
         return newCat;
     });
-
+    
     const isExistCategory = async (id) => {
         let check = false;
         await checkCatExist.check(id).then((result) => {

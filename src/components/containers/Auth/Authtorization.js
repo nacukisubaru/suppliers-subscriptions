@@ -3,8 +3,10 @@ import AuthForm from "../../Authtorization/AuthForm";
 import { useAuthtorize } from "../../../api/hooks/authHooks";
 import { useChangeInputHandler } from "../../../api/hooks/eventHooks";
 import { useGetAuthManager } from "../../../api/hooks/authHooks";
+import { useSetAuthTokenFromSession } from "../../../api/hooks/authHooks";
 
 export default function Authtorization() {
+    useSetAuthTokenFromSession();
     const authtorization = useAuthtorize();
     const inputHandler = useChangeInputHandler("");
     const authManager = useGetAuthManager();
