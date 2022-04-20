@@ -4,9 +4,6 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import FormHelperText from "@mui/material/FormHelperText";
-import { useAuthtorize } from "../../api/hooks/authHooks";
-import { useChangeInputHandler } from "../../api/hooks/eventHooks";
-import { useGetAuthManager } from "../../api/hooks/authHooks";
 
 const paperStyle = {
     padding: 20,
@@ -17,23 +14,9 @@ const paperStyle = {
 
 const btnstyle = { margin: "8px 0" };
 
-export default function AuthForm() {
-    const authtorization = useAuthtorize();
-    const inputHandler = useChangeInputHandler("");
-    const authManager = useGetAuthManager();
-    const errPassword = authManager.errorPassword;
-    const errLogin = authManager.errorLogin;
-
-    const submitHandler = (event) => {
-        event.preventDefault();
-        authtorization.auth(
-            inputHandler.state.login,
-            inputHandler.state.password
-        );
-    };
-
+export default function AuthForm(auth) {
+    const authObj = auth.props.authObj;
     return (
-        authManager.token === '' &&
         <div
             style={{
                 display: "flex",
@@ -46,9 +29,9 @@ export default function AuthForm() {
                     <Grid align="center" style={{ marginTop: "15px" }}>
                         <h2>Авторизация</h2>
                     </Grid>
-                    <form onSubmit={submitHandler}>
+                    <form onSubmit={authObj.submitHandler}>
                         <TextField
-                            error={errLogin !== "" && true}
+                            error={authObj.errLogin !== "" && true}
                             style={{ marginBottom: "10px" }}
                             label="Логин"
                             placeholder="Введите имя"
@@ -56,12 +39,12 @@ export default function AuthForm() {
                             required
                             name="login"
                             onChange={(event) => {
-                                inputHandler.setField(event);
+                                authObj.inputHandler.setField(event);
                             }}
-                            helperText={errLogin}
+                            helperText={authObj.errLogin}
                         />
                         <TextField
-                            error={errPassword !== "" && true}
+                            error={authObj.errPassword !== "" && true}
                             label="Пароль"
                             placeholder="Введите пароль"
                             type="password"
@@ -69,9 +52,9 @@ export default function AuthForm() {
                             required
                             name="password"
                             onChange={(event) => {
-                                inputHandler.setField(event);
+                                authObj.inputHandler.setField(event);
                             }}
-                            helperText={errPassword}
+                            helperText={authObj.errPassword}
                         />
                         <Button
                             type="submit"
@@ -84,7 +67,7 @@ export default function AuthForm() {
                         </Button>
                     </form>
                     <FormHelperText style={{ color: "red" }}>
-                        {authManager.errorAuth}
+                        {authObj.authManager.errorAuth}
                     </FormHelperText>
                 </Paper>
             </Grid>
