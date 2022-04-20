@@ -1,6 +1,7 @@
 import RestApi from "../rest/restApi";
 import { useSelector, useDispatch } from "react-redux";
 import { useGetTokenAuthManager } from "./authHooks";
+import { setBindBetweenNameAndCode } from "../../redux/actions/categoriesAction"; 
 import {
     setOpenSnackBar,
     setOpenEditModal,
@@ -274,6 +275,15 @@ export const useCheckCategoryExist = () => {
 
     return { check };
 };
+
+export const useSetBindBetweenNameAndCode = () => {
+    const dispatch = useDispatch();
+    const set = (isBind = true) => {
+        dispatch(setBindBetweenNameAndCode(isBind))
+    }
+    
+    return {set, useGetCategoryManager};
+}
 
 export const useRestApiInit = () => {
     const token = useGetTokenAuthManager();
