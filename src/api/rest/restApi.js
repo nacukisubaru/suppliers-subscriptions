@@ -130,6 +130,30 @@ export default class RestApi {
         return this.getMessageInternalError(result);
     };
 
+    getCategoryWithCountChildrensByField = async (field = "id", value = "") => {
+        let arrayCategories = [];
+        const categories = await this.getCategoryByField(field, value); 
+        if (categories.status === this.statusGetOk) {
+            let catObj = {};
+            for(var cat in categories.data) {
+                let childrens = await this.getCategoryByField(field, categories.data[cat].id);
+                if (childrens.status === this.statusGetOk) {
+                    let count = 0;
+                    if(childrens.data.length && Array.isArray(childrens.data)) {
+                        count = childrens.data.length;
+                    }
+                    catObj = categories.data[cat];
+                    catObj.countChildrens = count;
+                    arrayCategories.push(catObj);
+                } else {
+                    arrayCategories = categories.data;
+                }
+            }
+        }
+        
+        return {data: arrayCategories, status: categories.status};
+    }
+
     getMessageInternalError = (data) => {
         const errorObject = {
             message:

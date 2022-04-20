@@ -29,8 +29,10 @@ export const useAuthtorize = () => {
         const result = await restService.auth(login, password);
         if (typeof result === "string") {
             dispatch(setTokenAction(result));
-            const categories = await restService.getCategoryByField('parentId', 0);
-            dispatch(setCategoriesList(categories.data));
+            const categories = await restService.getCategoryWithCountChildrensByField('parentId', 0);
+            if(categories.status === 200) {     
+                dispatch(setCategoriesList(categories.data));
+            }
         } else {
             switch (result.status) {
                 case STATUS_BAD_REQUEST:
@@ -78,9 +80,11 @@ export const useSetAuthTokenFromSession = () => {
     const authData = useSelector((state) => state.authManager);
     
     const getCategories = async () => {
-        const categories = await restService.getCategoryByField('parentId', 0);
-        dispatch(setCategoriesList(categories.data));
-        return categories.data;
+        const categories = await restService.getCategoryWithCountChildrensByField('parentId', 0);
+        if(categories.status === 200) {     
+            dispatch(setCategoriesList(categories.data));
+        }
+        return categories;
     }
 
     if(sessionToken !== null && authData.token === '') {

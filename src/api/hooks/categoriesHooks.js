@@ -1,7 +1,7 @@
 import RestApi from "../rest/restApi";
 import { useSelector, useDispatch } from "react-redux";
 import { useGetTokenAuthManager } from "./authHooks";
-import { setBindBetweenNameAndCode } from "../../redux/actions/categoriesAction"; 
+import { setBindBetweenNameAndCode } from "../../redux/actions/categoriesAction";
 import {
     setOpenSnackBar,
     setOpenEditModal,
@@ -54,6 +54,7 @@ export const useCrudCategory = () => {
                     name,
                     code,
                     parentId: manager.parentId,
+                    countChildrens: 0
                 })
             );
             dispatch(setOpenEditModal(false));
@@ -174,9 +175,14 @@ export const useGetCategoryByField = () => {
     const dispatch = useDispatch();
     const backDrop = useToggleBackDrop();
 
-    const get = async (field, id, setSelected = true, setChain = false) => {
+    const get = async (field, id, setSelected = true, setChain = false, countChildrensCat = false) => {
         backDrop.toggle(true);
-        const result = await restService.getCategoryByField(field, id);
+        let result = {};
+        if(countChildrensCat) {
+            result = await restService.getCategoryWithCountChildrensByField(field, id);
+        } else {
+            result = await restService.getCategoryByField(field, id);
+        }
         if (result.status === 200) {
             if (setSelected) {
                 dispatch(setSelectedCategory(result.data));
@@ -221,12 +227,13 @@ export const useBackByChainCategory = () => {
                 categoryId = breadcrumbs[breadcrumbs.length - 1].id;
             }
             
-            const result = await restService.getCategoryByField(
+            const result = await restService.getCategoryWithCountChildrensByField(
                 "parentId",
                 categoryId
             );
             dispatch(setBreadcrumbsList(breadcrumbs));
             dispatch(setCategoriesList(result.data));
+            dispatch(setParentId(categoryId));
             backDrop.toggle(false);
         }
     };
