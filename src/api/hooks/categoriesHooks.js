@@ -157,11 +157,17 @@ export const useCrudManager = () => {
     const appManager = useGetAppManager();
     const manager = useGetCategoryManager();
     const crud = useCrudCategory();
+    const restService = new RestApi();
+    const dispatch = new useDispatch();
+
     const manage = (name, code) => {
         if (appManager.isEditModal) {
             const id = manager.categoryId;
             if(manager.parentUpdId) {
                 crud.update(id, name, code, manager.parentUpdId);
+                restService.getCategoryByField('parentId', manager.parentId).then((res)=> {
+                    dispatch(setCategoriesList(res.data));
+                });
             } else {
                 crud.update(id, name, code);
             }
