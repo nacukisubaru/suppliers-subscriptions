@@ -72,6 +72,25 @@ export const useAuthtorize = () => {
     return { token, auth };
 };
 
+export const useSetAuthTokenFromSession = () => {
+    const dispatch = useDispatch();
+    const sessionToken = sessionStorage.getItem('token');
+    const authData = useSelector((state) => state.authManager);
+    
+    const getCategories = async () => {
+        const categories = await restService.getCategoryByField('parentId', 0);
+        dispatch(setCategoriesList(categories.data));
+        return categories.data;
+    }
+
+    if(sessionToken !== null && authData.token === '') {
+        dispatch(setTokenAction(sessionToken));
+        getCategories();
+    }
+
+    return useGetAuthManager();
+}
+
 export const useGetAuthManager = () => {
     return useSelector((state) => state.authManager);
 };

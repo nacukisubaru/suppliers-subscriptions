@@ -54,6 +54,7 @@ export default class RestApi {
 
         if (result.status === this.statusPostOk) {
             this.token = result.data.token;
+            sessionStorage.setItem('token', this.token);
             return this.token;
         }
 
