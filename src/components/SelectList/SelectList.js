@@ -22,14 +22,7 @@ export default function SelectList(props) {
                     >
                         {
                             selectObj.items.map((item) => {
-                                let valueItem = item.id;
-                                if(selectObj.valueIsParent) {
-                                    valueItem = item.parentId;
-                                }
-                                if(!item.parentId) {
-                                    valueItem = item.id;
-                                } 
-                                return (<MenuItem value={valueItem} key={item.id}>{item.name}</MenuItem>);
+                                return (<MenuItem value={item.id} key={item.id}>{item.name}</MenuItem>);
                             })
                         }
                     </Select>

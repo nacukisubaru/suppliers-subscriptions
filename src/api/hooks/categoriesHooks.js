@@ -23,6 +23,7 @@ import {
     STATUS_INTERNAL_ERROR,
     STATUS_BAD_REQUEST,
 } from "../../redux/reducers/authReducer";
+import { setParentUpdId } from "../../redux/actions/categoriesAction";
 
 export const useGetCategories = () => {
     return useSelector((state) => state.categoriesManager.categoriesList);
@@ -163,14 +164,10 @@ export const useCrudManager = () => {
     const manage = (name, code) => {
         if (appManager.isEditModal) {
             const id = manager.categoryId;
-            if(manager.parentUpdId) {
-                crud.update(id, name, code, manager.parentUpdId);
-                restService.getCategoryByField('parentId', manager.parentId).then((res)=> {
-                    dispatch(setCategoriesList(res.data));
-                });
-            } else {
-                crud.update(id, name, code);
-            }
+            crud.update(id, name, code, manager.parentUpdId);
+            restService.getCategoryByField('parentId', manager.parentId).then((res)=> {
+                dispatch(setCategoriesList(res.data));
+            });
         } else {
             crud.add(name, code);
         }
@@ -190,6 +187,7 @@ export const useGetCategoryByField = () => {
         const result = await restService.getCategoryByField(field, id);
         if (result.status === 200) {
             if (setSelected) {
+                dispatch(setParentUpdId(result.data.parentId));
                 dispatch(setSelectedCategory(result.data));
             } else {
                 field === "parentId" && dispatch(setParentId(id));

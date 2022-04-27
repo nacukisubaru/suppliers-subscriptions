@@ -20,12 +20,22 @@ export default function EditCategory() {
     const submitHandler = (event) => {
         event.preventDefault();
         crudManager.manage(inputHandler.state.name, inputHandler.state.code);
-
     };
-    
+
     const handleChange = (event) => {
         dispatch(setParentUpdId(event.target.value));
-    }
+    };
+
+    let cloneAllCategories = categoryManager.allCategories.map((category) => {
+       return {id: category.id, parentId: category.parentId, name: category.name, code: category.code}; 
+    });
+    
+    let cloneAllCategoriesNew = cloneAllCategories.filter((category)=> {      
+        console.log(category.parentId);
+        if(category.id !== categoryManager.selectedCategory.id) {
+           return category;
+        }
+    });
 
     return (
         <div>
@@ -56,14 +66,25 @@ export default function EditCategory() {
                     }}
                     defaultValue={categoryManager.selectedCategory.code}
                     helperText={crudManager.manager.codeCategoryError}
-                    style={{marginBottom:'8px'}}
+                    style={{ marginBottom: "8px" }}
                 />
-                {crudManager.isUpd && (<SelectList props={{labelValue:'Раздел', items: categoryManager.allCategories, handleChange, valueIsParent: true}}></SelectList>)}
+                {crudManager.isUpd && (
+                    <SelectList
+                        props={{
+                            labelValue: "Раздел",
+                            items: cloneAllCategoriesNew,
+                            handleChange,
+                            selectedValue: categoryManager.parentUpdId,
+                        }}
+                    ></SelectList>
+                )}
                 <Box sx={{ flexGrow: 1 }}>
                     <Grid container spacing={2}>
                         <Grid item xs={8}>
                             <Button
-                                onClick={()=>{dispatch(setOpenEditModal(false))}}
+                                onClick={() => {
+                                    dispatch(setOpenEditModal(false));
+                                }}
                                 color="primary"
                                 variant="contained"
                             >
@@ -72,7 +93,7 @@ export default function EditCategory() {
                         </Grid>
                         <Grid item xs={4}>
                             <Button
-                                style={{marginLeft:'13px'}}
+                                style={{ marginLeft: "13px" }}
                                 type="submit"
                                 color="primary"
                                 variant="contained"
