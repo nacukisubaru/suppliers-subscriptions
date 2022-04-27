@@ -3,11 +3,13 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
+import SelectList from "../SelectList/SelectList";
 import { useChangeInputHandler } from "../../api/hooks/eventHooks";
 import { setOpenEditModal } from "../../redux/actions/appAction";
 import { useDispatch } from "react-redux";
 import { useCrudManager } from "../../api/hooks/categoriesHooks";
 import { useGetCategoryManager } from "../../api/hooks/categoriesHooks";
+import { setParentUpdId } from "../../redux/actions/categoriesAction";
 
 export default function EditCategory() {
     const inputHandler = useChangeInputHandler();
@@ -18,7 +20,12 @@ export default function EditCategory() {
     const submitHandler = (event) => {
         event.preventDefault();
         crudManager.manage(inputHandler.state.name, inputHandler.state.code);
+
     };
+    
+    const handleChange = (event) => {
+        dispatch(setParentUpdId(event.target.value));
+    }
 
     return (
         <div>
@@ -51,6 +58,7 @@ export default function EditCategory() {
                     helperText={crudManager.manager.codeCategoryError}
                     style={{marginBottom:'8px'}}
                 />
+                {crudManager.isUpd && (<SelectList props={{labelValue:'Раздел', items: categoryManager.allCategories, handleChange, valueIsParent: true}}></SelectList>)}
                 <Box sx={{ flexGrow: 1 }}>
                     <Grid container spacing={2}>
                         <Grid item xs={8}>

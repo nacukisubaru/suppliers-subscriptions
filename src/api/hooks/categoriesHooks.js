@@ -85,7 +85,7 @@ export const useCrudCategory = () => {
         }
     };
 
-    const update = async (id, name, code) => {
+    const update = async (id, name, code, parentId = null) => {
         const categoriesList = [];
         categories.forEach((category) => {
             const newCat = category;
@@ -98,11 +98,14 @@ export const useCrudCategory = () => {
 
         errors.close();
         if (name.length > 0 && code.length > 0) {
+            if(parentId === null) {
+                parentId = manager.parentId;
+            }
             const result = await restService.updateCategory(
                 id,
                 name,
                 code,
-                manager.parentId
+                parentId
             );
             if (result === true) {
                 dispatch(setCategoriesList(categoriesList));
@@ -154,17 +157,20 @@ export const useCrudManager = () => {
     const appManager = useGetAppManager();
     const manager = useGetCategoryManager();
     const crud = useCrudCategory();
-
     const manage = (name, code) => {
         if (appManager.isEditModal) {
             const id = manager.categoryId;
-            crud.update(id, name, code);
+            if(manager.parentUpdId) {
+                crud.update(id, name, code, manager.parentUpdId);
+            } else {
+                crud.update(id, name, code);
+            }
         } else {
             crud.add(name, code);
         }
     };
 
-    return { manager, manage };
+    return { manager, isUpd: appManager.isEditModal, manage };
 };
 
 export const useGetCategoryByField = () => {
