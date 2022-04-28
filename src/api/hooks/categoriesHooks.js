@@ -24,6 +24,7 @@ import {
     STATUS_INTERNAL_ERROR,
     STATUS_BAD_REQUEST,
 } from "../../redux/reducers/authReducer";
+import { setParentUpdId } from "../../redux/actions/categoriesAction";
 
 export const useGetCategories = () => {
     return useSelector((state) => state.categoriesManager.categoriesList);
@@ -87,7 +88,7 @@ export const useCrudCategory = () => {
         }
     };
 
-    const update = async (id, name, code) => {
+    const update = async (id, name, code, parentId = null) => {
         const categoriesList = [];
         categories.forEach((category) => {
             const newCat = category;
@@ -100,11 +101,14 @@ export const useCrudCategory = () => {
 
         errors.close();
         if (name.length > 0 && code.length > 0) {
+            if(parentId === null) {
+                parentId = manager.parentId;
+            }
             const result = await restService.updateCategory(
                 id,
                 name,
                 code,
-                manager.parentId
+                parentId
             );
             if (result === true) {
                 dispatch(setCategoriesList(categoriesList));
@@ -156,17 +160,22 @@ export const useCrudManager = () => {
     const appManager = useGetAppManager();
     const manager = useGetCategoryManager();
     const crud = useCrudCategory();
+    const restService = new RestApi();
+    const dispatch = new useDispatch();
 
     const manage = (name, code) => {
         if (appManager.isEditModal) {
             const id = manager.categoryId;
-            crud.update(id, name, code);
+            crud.update(id, name, code, manager.parentUpdId);
+            restService.getCategoryByField('parentId', manager.parentId).then((res)=> {
+                dispatch(setCategoriesList(res.data));
+            });
         } else {
             crud.add(name, code);
         }
     };
 
-    return { manager, manage };
+    return { manager, isUpd: appManager.isEditModal, manage };
 };
 
 export const useGetCategoryByField = () => {
@@ -185,6 +194,7 @@ export const useGetCategoryByField = () => {
         }
         if (result.status === 200) {
             if (setSelected) {
+                dispatch(setParentUpdId(result.data.parentId));
                 dispatch(setSelectedCategory(result.data));
             } else {
                 field === "parentId" && dispatch(setParentId(id));

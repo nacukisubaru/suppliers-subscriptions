@@ -62,7 +62,12 @@ export default class RestApi {
     };
 
     getCategories = async () => {
-        return await this.sendRequest("get", "categories");
+        const result = await this.sendRequest("get", "categories");
+        if (result.status === this.statusGetOk) {
+            return result;
+        }
+
+        return false;
     };
 
     addCategory = async (name, code, parentId = null) => {

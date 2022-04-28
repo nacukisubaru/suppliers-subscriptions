@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -26,6 +26,8 @@ import {
 import { useDispatch } from "react-redux";
 import { setParentId } from "../../redux/actions/categoriesAction";
 import { Container } from "@mui/material";
+import { setAllCategories } from "../../redux/actions/categoriesAction";
+import RestApi from "../../api/rest/restApi";
 
 export default function CategoriesList() {
     const crud = useCrudCategory();
@@ -37,6 +39,19 @@ export default function CategoriesList() {
     const manager = useGetCategoryManager();
     const checkCatExist = useCheckCategoryExist();
     const dispatch = useDispatch();
+    
+   const allCategoriesList = useCallback(()=>{
+        const rest = new RestApi();
+        rest.getCategories().then((response)=>{
+            if(response) {
+                dispatch(setAllCategories(response.data));
+            }
+        });
+    }, [dispatch])
+
+    useEffect(() => {
+            allCategoriesList();
+    }, [allCategoriesList]);
 
     const categoriesList = getCategories.map((category) => {
         const newCat = category;

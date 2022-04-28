@@ -11,7 +11,9 @@ import {
     SET_CHAIN_LIST,
     SET_BREADCRUMBS_CATEGORIES,
     SET_BREADCRUMBS_LIST,
-    SET_BIND_BEETWEN_NAME_CODE
+    SET_BIND_BEETWEN_NAME_CODE,
+    SET_ALL_CATEGORIES,
+    SET_PARENT_UPD_ID
 } from "../reducers/categoriesReducer";
 
 export function setCategoriesList(list) {
@@ -64,4 +66,12 @@ export function setBreadcrumbsList(list) {
 
 export function setBindBetweenNameAndCode(isBind) {
     return {type: SET_BIND_BEETWEN_NAME_CODE, payload: isBind};
+}
+
+export function setAllCategories(list) {
+    return {type:SET_ALL_CATEGORIES, payload: list};
+}
+
+export function setParentUpdId(id) {
+    return {type: SET_PARENT_UPD_ID, payload:id};
 }

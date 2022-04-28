@@ -11,8 +11,11 @@ export const SET_CHAIN_LIST = "CHAIN/SET_CHAIN_LIST";
 export const SET_BREADCRUMBS_CATEGORIES = "BREADCRUMBS/SET_BREADCRUMBS_CATEGORIES";
 export const SET_BREADCRUMBS_LIST = "BREADCRUMBS/SET_BREADCRUMBS_LIST";
 export const SET_BIND_BEETWEN_NAME_CODE = "BIND/SET_BIND_BEETWEN_NAME_CODE";
+export const SET_ALL_CATEGORIES = "CATEGORIES/SET_ALL_CATEGORIES";
+export const SET_PARENT_UPD_ID = "PARENT/SET_PARENT_UPD_ID";
 
 const initialState = {
+    allCategories: [],
     categoriesList: [],
     categoryError: "",
     nameCategoryError: "",
@@ -22,7 +25,8 @@ const initialState = {
     chainParentIds: [],
     breadcrumbs: [{id: 0, name: 'Главная'}],
     selectedCategory: { id: 0, name: "", code: "", parentId: null },
-    bindBeetwenNameCode: true
+    bindBeetwenNameCode: true,
+    parentUpdId: 0
 };
 
 export const categoriesReducer = (state = initialState, action) => {
@@ -70,6 +74,16 @@ export const categoriesReducer = (state = initialState, action) => {
         return {
             ...state,
             bindBeetwenNameCode: action.payload
+        }
+        case SET_ALL_CATEGORIES: 
+        return {
+            ...state,
+            allCategories: action.payload
+        }
+        case SET_PARENT_UPD_ID:
+        return {
+            ...state,
+            parentUpdId: action.payload
         }
         default:
             return state;
