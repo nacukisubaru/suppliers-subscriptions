@@ -70,7 +70,7 @@ export default function CategoriesList() {
     const openCategoriesList = async (id) => {
         let existCategory = await isExistCategory(id);
         if (existCategory) {
-            category.get("parentId", id, false, true);
+            category.get("parentId", id, false, true, true);
         }
     };
 
@@ -104,6 +104,7 @@ export default function CategoriesList() {
     const columns = [
         { field: "id", headerName: "ID", width: 70 },
         /*{ field: "parentId", headerName: "Родительский ID", width: 130 },*/
+        { field: "countChildrens", headerName: "Кол-во подкатегорий", width: 170 },
         { field: "code", headerName: "Код", width: 120 },
         { field: "name", headerName: "Название", flex: 1, minWidth: 400 },
         {

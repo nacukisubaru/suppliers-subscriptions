@@ -9,6 +9,7 @@ import { setCategoryError } from "../../redux/actions/categoriesAction";
 import { toggleBackDrop } from "../../redux/actions/appAction";
 import { setSelectedCategory } from "../../redux/actions/categoriesAction";
 import { useCheckCategoryExist } from "../hooks/categoriesHooks";
+import { transliterate as slugify} from 'transliteration';
 
 export const useGetAppManager = () => {
     return useSelector((state) => state.appManager);
@@ -61,3 +62,11 @@ export const useToggleBackDrop = () => {
     };
     return { state: manager.isBackDropOn, toggle };
 };
+
+export const useTransliterateText = () => {
+   const transliterate = (text) => {
+      return slugify(text).replaceAll(' ', '-');
+    }
+
+    return {transliterate};
+}

@@ -21,8 +21,16 @@ export const useChangeInputHandler = () => {
         }));
     };
 
+    const setFieldByObj = (obj) => {
+        setState((prev) => ({
+            ...prev,
+            ...{ [obj.name]: obj.value },
+        }));
+    };
+
     return {
         state,
         setField,
+        setFieldByObj
     };
 };
